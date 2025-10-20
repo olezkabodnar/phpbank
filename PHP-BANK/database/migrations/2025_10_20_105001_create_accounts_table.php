@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -25,14 +26,15 @@ return new class extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
-            $table->check('two_fa_enabled IN ("Y", "N")');
-            $table->check('status IN ("A", "C")');
-            $table->check('balance >= 0');
-
             $table->index('email');
             $table->index('phone_no');
             $table->index('status');
         });
+
+        // Add check constraints using raw SQL
+        DB::statement('ALTER TABLE accounts ADD CONSTRAINT chk_two_fa_enabled CHECK (two_fa_enabled IN ("Y", "N"))');
+        DB::statement('ALTER TABLE accounts ADD CONSTRAINT chk_status CHECK (status IN ("A", "C"))');
+        DB::statement('ALTER TABLE accounts ADD CONSTRAINT chk_balance CHECK (balance >= 0)');
     }
 
     /**

@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -25,13 +26,14 @@ return new class extends Migration
                   ->on('accounts')
                   ->onDelete('cascade');
 
-            $table->check('type IN ("Deposit", "Withdrawal", "Transfer")');
-            $table->check('amount > 0');
-
             $table->index('account_id');
             $table->index('type');
             $table->index('transaction_date');
         });
+
+        // Add check constraints using raw SQL
+        DB::statement('ALTER TABLE transactions ADD CONSTRAINT chk_transaction_type CHECK (type IN ("Deposit", "Withdrawal", "Transfer"))');
+        DB::statement('ALTER TABLE transactions ADD CONSTRAINT chk_transaction_amount CHECK (amount > 0)');
     }
 
     /**
