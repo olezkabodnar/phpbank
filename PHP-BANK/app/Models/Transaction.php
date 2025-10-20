@@ -13,7 +13,7 @@ class Transaction extends Model
         'amount' => 'decimal:2',
         'transaction_date' => 'datetime',
         'description',
-        'balance_after' 'decimal:2',
+        'balance_after' => 'decimal:2',
     ];
 
     public function account()
