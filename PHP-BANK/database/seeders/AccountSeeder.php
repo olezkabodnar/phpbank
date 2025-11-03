@@ -12,10 +12,3 @@ class AccountSeeder extends Seeder
         Account::factory()->count(10)->create();
     }
 }
-
-$this->call(AccountSeeder::class);
-
-
-/*Run Migration + Seeder just run:
-
-php artisan migrate --seed*/

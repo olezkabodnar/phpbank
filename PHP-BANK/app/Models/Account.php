@@ -1,40 +1,52 @@
 <?php
 
-namespace App\Domain\Accounts;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Domain\Transactions\Transaction;
-use App\Domain\Transfers\Transfer;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class Account extends Model
 {
-    protected $casts = [
+    use HasFactory;
+
+    protected $primaryKey = 'account_id';
+
+    protected $fillable = [
         'first_name',
         'last_name',
-        'dob' => 'date',
+        'dob',
         'phone_no',
         'email',
         'password',
-        'two_fa_enabled' => 'boolean',
+        'two_fa_enabled',
         'status',
+        'balance',
+    ];
+
+    protected $casts = [
+        'dob' => 'date',
+        'two_fa_enabled' => 'boolean',
         'balance' => 'decimal:2',
     ];
 
     public function transactions()
     {
-        return $this->hasMany(Transaction::class);
+        return $this->hasMany(Transaction::class, 'account_id', 'account_id');
     }
 
     public function transfersSent()
     {
-        return $this->hasMany(Transfer::class, 'from_account_id');
+        return $this->hasMany(Transfer::class, 'from_account_id', 'account_id');
     }
 
     public function transfersReceived()
     {
-        return $this->hasMany(Transfer::class, 'to_account_id');
+        return $this->hasMany(Transfer::class, 'to_account_id', 'account_id');
     }
-    
+
     public function setDobAttribute($value)
     {
         $dob = Carbon::parse($value);
@@ -44,12 +56,12 @@ class Account extends Model
 
         $this->attributes['dob'] = $dob;
     }
-    
-    public function deposit(Account $account, float $amount)
+
+    public function deposit(float $amount)
     {
-        DB::transaction(function () use ($account, $amount) {
-            $account->balance = bcadd($account->balance, $amount, 2);
-            $account->save();
+        DB::transaction(function () use ($amount) {
+            $this->balance = bcadd($this->balance, (string)$amount, 2);
+            $this->save();
         });
     }
 
