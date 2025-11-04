@@ -17,4 +17,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // account Routes
 Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+Route::get('/account/change-password', [AccountController::class, 'showChangePasswordForm'])->name('account.changePassword');
+Route::get('/account/change-email', [AccountController::class, 'showChangeEmailForm'])->name('account.changeEmail');
+Route::get('/account/2fa', [AccountController::class, 'show2FAForm'])->name('account.twoFA');
+Route::get('/account/transactions', [AccountController::class, 'showTransactions'])->name('account.transactions');
+Route::get('/account/transfer', [AccountController::class, 'showTransferForm'])->name('account.transfer');
+Route::get('/account/topup', [AccountController::class, 'showTopupForm'])->name('account.topup');
+Route::get('/password-recovery', [AccountController::class, 'showPasswordRecovery'])->name('password.recovery');
 
