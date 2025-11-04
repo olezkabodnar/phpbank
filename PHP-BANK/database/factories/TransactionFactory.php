@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Domain\Transactions\Transaction;
-use App\Domain\Accounts\Account;
+use App\Models\Transaction;
+use App\Models\Account;
 
 class TransactionFactory extends Factory
 {

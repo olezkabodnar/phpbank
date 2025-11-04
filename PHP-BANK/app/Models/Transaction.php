@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Domain\Transactions;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Domain\Accounts\Account;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Account;
 
 class Transaction extends Model
 {
+    use HasFactory;
+
+    public $timestamps = false;
+
     protected $casts = [
         'account_id',
         'type',
