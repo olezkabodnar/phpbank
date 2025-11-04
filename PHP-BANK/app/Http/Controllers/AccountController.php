@@ -4,16 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Account;
+use Illuminate\Support\Facades\Session;
 
 class AccountController extends Controller
 {
     public function index()
     {
-        // For demo, get first account. In production, use authenticated user's account
-        $account = Account::first();
+        // retrieve account from session
+        $accountId = Session::get('account_id');
+
+        if (!$accountId) {
+            return redirect()->route('login')->with('error', 'Please login first');
+        }
+
+        $account = Account::find($accountId);
 
         if (!$account) {
-            return redirect()->route('welcome')->with('error', 'No account found');
+            Session::forget(['account_id', 'account']);
+            return redirect()->route('login')->with('error', 'Account not found');
         }
 
         return view('account.index', compact('account'));
