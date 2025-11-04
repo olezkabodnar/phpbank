@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Domain\Accounts\Account;
+use App\Models\Account;
 use Illuminate\Support\Str;
 
 class AccountFactory extends Factory
@@ -15,11 +15,11 @@ class AccountFactory extends Factory
         return [
             'first_name' => $this->faker->firstName,
             'last_name'  => $this->faker->lastName,
-            'dob'        => $this->faker->date(),
-            'phone_no'   => $this->faker->unique()->phoneNumber,
+            'dob'        => $this->faker->dateTimeBetween('-65 years', '-18 years'),
+            'phone_no'   => $this->faker->unique()->numerify('##########'),
             'email'      => $this->faker->unique()->safeEmail,
             'password'   => bcrypt('password'),
-            'two_fa_enabled' => false,
+            'two_fa_enabled' => 'N',
             'status'     => 'A',
             'balance'    => $this->faker->randomFloat(2, 100, 10000),
         ];

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Domain\Transactions\Transaction;
+use App\Models\Transaction;
 
 class TransactionSeeder extends Seeder
 {
@@ -12,6 +12,3 @@ class TransactionSeeder extends Seeder
         Transaction::factory()->count(20)->create();
     }
 }
-
-
-$this->call(TransactionSeeder::class);
