@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Account;
 use Illuminate\Support\Facades\Session;
+use App\Models\Transaction;
 
 class AccountController extends Controller
 {
@@ -98,8 +99,11 @@ class AccountController extends Controller
             return redirect()->route('login')->with('error', 'Account not found');
         }
 
-        return view('account.transactions', compact('account'));
+        $transactions = $account->transactions;
+
+        return view('account.transactions', compact('account', 'transactions'));
     }
+
 
     public function showTransferForm()
     {
