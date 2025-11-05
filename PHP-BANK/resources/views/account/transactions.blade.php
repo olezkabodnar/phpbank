@@ -13,6 +13,7 @@
         </a>
     </div>
 
+    <!-- Page Header -->
     <div class="main-content mb-8 m-0">
         <h1 class="card-title mb-6">Transactions</h1>
         <p class="mb-6 text-gray-400">View your recent activity.</p>
