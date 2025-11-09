@@ -6,7 +6,7 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
@@ -34,11 +34,11 @@
     }
 
     .auth-title {
-        @apply text-5xl font-light tracking-tight mb-4;
+        @apply text-5xl font-extrabold tracking-tight mb-4;
     }
 
     .auth-subtitle {
-        @apply text-gray-400 text-lg;
+        @apply text-[424242] text-lg;
     }
 
     /* Form Container */
@@ -65,19 +65,19 @@
     }
 
     .form-label {
-        @apply block text-sm font-medium text-gray-200;
+        @apply block text-sm font-medium text-[424242];
     }
 
     .form-input {
-        @apply w-full px-4 py-3 bg-[#303030] border border-[#424242] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#e87f0c] focus:ring-1 focus:ring-[#e87f0c] transition;
+        @apply w-full px-4 py-3 bg-[#303030] border border-[#424242] rounded-lg text-white placeholder-[424242] focus:outline-none focus:border-[#e87f0c] focus:ring-1 focus:ring-[#e87f0c] transition;
     }
 
     .form-input-with-icon {
-        @apply w-full pl-12 pr-4 py-3 bg-[#303030] border border-[#424242] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#e87f0c] focus:ring-1 focus:ring-[#e87f0c] transition;
+        @apply w-full pl-4 pr-12 py-3 bg-[#303030] border border-[#424242] rounded-full text-[#ffffff] placeholder-[424242] focus:outline-none focus:border-[#e87f0c] focus:ring-1 focus:ring-[#e87f0c] transition;
     }
 
     .form-icon {
-        @apply absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none;
+        @apply absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[424242] pointer-events-none;
     }
 
     .form-icon-wrapper {
@@ -85,7 +85,7 @@
     }
 
     .form-helper-text {
-        @apply text-xs text-gray-500 mt-2;
+        @apply text-xs text-[424242] mt-2;
     }
 
     /* Buttons */
@@ -115,12 +115,12 @@
     }
 
     .divider-label {
-        @apply px-4 bg-[#212121] text-gray-400;
+        @apply px-4 bg-[#212121] text-[424242];
     }
 
     /* Action Links */
     .auth-link {
-        @apply text-sm text-gray-400 hover:text-[#e87f0c] transition;
+        @apply text-sm text-[424242] hover:text-[#e87f0c] transition;
     }
 
     /* Success Messages */
@@ -162,7 +162,7 @@
     }
 
     .sidebar-link {
-        @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-[#2d2d2d] hover:text-white transition;
+        @apply flex items-center gap-3 px-4 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition;
     }
 
     .sidebar-link.active {
@@ -174,7 +174,7 @@
     }
 
     .sidebar-footer-link {
-        @apply flex items-center gap-2 text-sm text-gray-400 hover:text-white transition;
+        @apply flex items-center gap-2 text-sm text-[424242] hover:text-white transition;
     }
 
     .sidebar-button-form {
@@ -182,7 +182,7 @@
     }
 
     .sidebar-button {
-        @apply w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-[#2d2d2d] hover:text-white transition border-none bg-transparent cursor-pointer;
+        @apply w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition border-none bg-transparent cursor-pointer;
     }
 
     /* Main Content */
@@ -195,7 +195,7 @@
     }
 
     .user-info-icon {
-        @apply w-5 h-5 text-gray-400;
+        @apply w-5 h-5 text-[424242];
     }
 
     .user-info-text {
@@ -229,7 +229,7 @@
     }
 
     .balance-label {
-        @apply text-xs text-gray-400 mb-1;
+        @apply text-xs text-[424242] mb-1;
     }
 
     .balance-amount {
@@ -241,7 +241,7 @@
     }
 
     .balance-subtext {
-        @apply text-xs text-gray-400 mt-1;
+        @apply text-xs text-[424242] mt-1;
     }
 
     /* Action Buttons */
@@ -263,7 +263,7 @@
     }
 
     .detail-label {
-        @apply text-xs text-gray-400;
+        @apply text-xs text-[424242]
     }
 
     .detail-value {
@@ -312,7 +312,7 @@
     }
 
     .table-header-cell {
-        @apply py-4 px-4 text-gray-400 font-semibold text-left;
+        @apply py-4 px-4 text-[424242] font-semibold text-left;
     }
 
     .table-header-cell.right {
@@ -336,11 +336,11 @@
     }
 
     .table-cell-muted {
-        @apply text-gray-300;
+        @apply text-[424242];
     }
 
     .table-empty {
-        @apply py-8 px-4 text-center text-gray-400;
+        @apply py-8 px-4 text-center text-[424242];
     }
 
     /* Transaction Badge */
@@ -370,7 +370,7 @@
     }
 
     .amount-neutral {
-        @apply text-gray-300;
+        @apply text-[424242];
     }
 
     /* Pagination */
