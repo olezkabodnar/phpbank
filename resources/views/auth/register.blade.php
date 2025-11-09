@@ -10,9 +10,7 @@
     <div class="auth-container">
         <!-- Header -->
         <div class="auth-header">
-            <img src="{{ asset('images/php-bank-logo.svg') }}" alt="PHP BANK" class="auth-logo">
-            <h1 class="auth-title">Create Account</h1>
-            <p class="auth-subtitle">Join PHP BANK today</p>
+            <h1 class="auth-title">Sign In</h1>
         </div>
 
         <!-- Error Messages -->
@@ -91,7 +89,7 @@
 
         <!-- Sign In Link -->
         <a href="{{ route('login') }}" class="btn-secondary">
-            Sign In Instead
+            Log In
         </a>
     </div>
 </body>

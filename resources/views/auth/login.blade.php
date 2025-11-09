@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - PHP BANK</title>
+    <title>Log In - PHP BANK</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="auth-page">
     <div class="auth-container">
         <!-- Header -->
         <div class="auth-header">
-            <img src="{{ asset('images/php-bank-logo.svg') }}" alt="PHP BANK" class="auth-logo">
-            <h1 class="auth-title">Sign In</h1>
-            <p class="auth-subtitle">Access your banking account</p>
+            <h1 class="auth-title">Log In</h1>
         </div>
 
         <!-- Error Messages -->
@@ -26,7 +24,7 @@
             </div>
         @endif
 
-        <!-- Login Form -->
+        <!-- Log In Form -->
         <form method="POST" action="{{ route('login') }}" class="auth-form">
             @csrf
 
@@ -68,26 +66,24 @@
                 </div>
             </div>
 
-            <!-- Sign In Button -->
+            <div class="mt-2 flex justify-end">
+                    <a class="auth-link">
+                        Forgot password?
+                    </a>
+            </div>            
+
+            <!-- Log In Button -->
             <button type="submit" class="btn-primary mt-8">
-                Sign In
+                Log In
             </button>
         </form>
 
-        <!-- Divider -->
-        <div class="divider-section">
-            <div class="divider-line">
-                <div class="divider-border"></div>
-            </div>
-            <div class="divider-text">
-                <span class="divider-label">Don't have an account?</span>
-            </div>
-        </div>
-
-        <!-- Register Link -->
-        <a href="{{ route('register') }}" class="btn-secondary">
-            Create Account
-        </a>
+        <p class="mt-6 text-center text-sm text-white">
+                Don’t have an account?
+                <a href="{{ route('register') }}" class="text-[#e87f0c] font-semibold">
+                    Sign in
+                </a>
+            </p>
     </div>
 </body>
 </html>
