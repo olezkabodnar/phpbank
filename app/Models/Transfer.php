@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Domain\Transfers;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Domain\Accounts\Account;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transfer extends Model
 {
+    use HasFactory;
+
     protected $casts = [
         'from_account_id',
         'to_account_id',
