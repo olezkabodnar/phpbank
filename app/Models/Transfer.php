@@ -9,6 +9,8 @@ class Transfer extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $casts = [
         'from_account_id',
         'to_account_id',
