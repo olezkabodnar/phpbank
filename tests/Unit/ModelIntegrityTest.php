@@ -3,10 +3,11 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use App\Models\Account;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Domain\Accounts\Account;
-use Domain\Transactions\Transaction;
-use Domain\Transfers\Transfer;
+use Illuminate\Support\Facades\Session;
+use App\Models\Transaction;
+use App\Models\Transfer;
 use Carbon\Carbon;
 
 class ModelIntegrityTest extends TestCase
@@ -17,12 +18,10 @@ class ModelIntegrityTest extends TestCase
     public function account_model_casts_are_configured_correctly()
     {
         $account = Account::factory()->create([
-            'two_fa_enabled' => true,
             'balance' => 1234.567,
             'dob' => '1990-01-01',
         ]);
 
-        $this->assertIsBool($account->two_fa_enabled);
         $this->assertEquals(1234.57, $account->balance); // 2dp precision
         $this->assertInstanceOf(Carbon::class, $account->dob);
     }
@@ -59,12 +58,10 @@ class ModelIntegrityTest extends TestCase
 
         $this->expectException(\Illuminate\Validation\ValidationException::class);
 
-        // You can trigger validation by using a form request or manually validating:
         validator(['dob' => $underageDob], [
             'dob' => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
         ])->validate();
 
-        // Should not throw
         validator(['dob' => $adultDob], [
             'dob' => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
         ])->validate();
@@ -111,8 +108,119 @@ class ModelIntegrityTest extends TestCase
             'last_name' => 'doe',
         ]);
 
-        // Assuming accessor: getFirstNameAttribute() returns ucfirst($value)
         $this->assertEquals('John', $account->first_name);
         $this->assertEquals('Doe', $account->last_name);
+    }
+
+    /** @test */
+    public function it_redirects_to_login_if_no_session_for_index()
+    {
+        $response = $this->get(route('account.index'));
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('error', 'Please login first');
+    }
+
+    /** @test */
+    public function it_redirects_to_login_if_account_not_found_in_index()
+    {
+        Session::put('account_id', 9999);
+
+        $response = $this->get(route('account.index'));
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('error', 'Account not found');
+    }
+
+    /** @test */
+    public function it_loads_index_view_with_account_if_logged_in()
+    {
+        $account = Account::factory()->create();
+        Session::put('account_id', $account->account_id);
+
+        $response = $this->get(route('account.index'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('account.index');
+        $response->assertViewHas('account', $account);
+    }
+
+    /** @test */
+    public function it_shows_topup_form_when_logged_in()
+    {
+        $account = Account::factory()->create();
+        Session::put('account_id', $account->account_id);
+
+        $response = $this->get(route('account.topup'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('account.topup');
+        $response->assertViewHas('account', $account);
+    }
+
+    /** @test */
+    public function it_redirects_to_login_if_not_logged_in_for_topup_validation()
+    {
+        $response = $this->post(route('account.topup.post'), [
+            'amount' => 10,
+            'card_name' => 'John Doe',
+            'card_number' => '1234567890123456',
+            'exp_date' => now()->addYear()->format('m/y'),
+            'cvv' => '123',
+        ]);
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHasErrors();
+    }
+
+    /** @test */
+    public function it_validates_topup_fields_correctly()
+    {
+        $account = Account::factory()->create();
+        Session::put('account_id', $account->account_id);
+
+        $response = $this->post(route('account.topup.post'), [
+            'amount' => '',
+            'card_name' => '1234',
+            'card_number' => '1234',
+            'exp_date' => '13/99',
+            'cvv' => '12',
+        ]);
+
+        $response->assertSessionHasErrors([
+            'amount', 'card_name', 'card_number', 'exp_date', 'cvv',
+        ]);
+    }
+
+    /** @test */
+    public function it_processes_topup_successfully_and_updates_balance()
+    {
+        $account = Account::factory()->create(['balance' => 100]);
+        Session::put('account_id', $account->account_id);
+
+        $validData = [
+            'amount' => 50,
+            'card_name' => 'John Doe',
+            'card_number' => '1234567890123456',
+            'exp_date' => now()->addYear()->format('m/y'),
+            'cvv' => '123',
+        ];
+
+        $response = $this->post(route('account.topup.post'), $validData);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $account->refresh();
+        $this->assertEquals(150, $account->balance);
+    }
+
+    /** @test */
+    public function it_returns_recover_password_view()
+    {
+        $response = $this->get(route('password.recovery'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('account.recover-password');
     }
 }

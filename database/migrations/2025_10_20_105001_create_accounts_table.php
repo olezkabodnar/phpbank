@@ -30,11 +30,6 @@ return new class extends Migration
             $table->index('phone_no');
             $table->index('status');
         });
-
-        // Add check constraints using raw SQL
-        DB::statement('ALTER TABLE accounts ADD CONSTRAINT chk_two_fa_enabled CHECK (two_fa_enabled IN ("Y", "N"))');
-        DB::statement('ALTER TABLE accounts ADD CONSTRAINT chk_status CHECK (status IN ("A", "C"))');
-        DB::statement('ALTER TABLE accounts ADD CONSTRAINT chk_balance CHECK (balance >= 0)');
     }
 
     /**

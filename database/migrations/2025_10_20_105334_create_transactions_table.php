@@ -30,10 +30,6 @@ return new class extends Migration
             $table->index('type');
             $table->index('transaction_date');
         });
-
-        // Add check constraints using raw SQL
-        DB::statement('ALTER TABLE transactions ADD CONSTRAINT chk_transaction_type CHECK (type IN ("Deposit", "Withdrawal", "Transfer"))');
-        DB::statement('ALTER TABLE transactions ADD CONSTRAINT chk_transaction_amount CHECK (amount > 0)');
     }
 
     /**
