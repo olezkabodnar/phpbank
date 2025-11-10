@@ -25,6 +25,12 @@ steps:
 - script: composer install --no-interaction --prefer-dist
   displayName: 'composer install'
 
+
+- task: DownloadSecureFile@1
+  inputs:
+      secureFile: '.env'
+
+
 - script: php artisan key:generate
   displayName: 'Generate application key'
 
