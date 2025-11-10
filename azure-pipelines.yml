@@ -25,5 +25,8 @@ steps:
 - script: composer install --no-interaction --prefer-dist
   displayName: 'composer install'
 
+- script: php artisan key:generate
+  displayName: 'Generate application key'
+
 - script: php artisan test
   displayName: 'Run Laravel tests'
