@@ -40,10 +40,6 @@ return new class extends Migration
             $table->index('status');
             $table->index('transfer_date');
         });
-
-        // Add check constraints using raw SQL
-        DB::statement('ALTER TABLE transfers ADD CONSTRAINT chk_transfer_status CHECK (status IN ("Pending", "Completed", "Failed"))');
-        DB::statement('ALTER TABLE transfers ADD CONSTRAINT chk_transfer_amount CHECK (amount > 0)');
     }
 
     /**
