@@ -30,6 +30,8 @@ steps:
   inputs:
       secureFile: '.env'
 
+- script: cp $(Agent.TempDirectory)/.env .env
+  displayName: 'Copy .env file to project root'
 
 - script: php artisan key:generate
   displayName: 'Generate application key'
