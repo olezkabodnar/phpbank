@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Domain\Transfers\Transfer;
-use App\Domain\Accounts\Account;
+use App\Models\Transfer;
+use App\Models\Account;
 
 class TransferFactory extends Factory
 {

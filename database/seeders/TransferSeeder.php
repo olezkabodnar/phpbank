@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Domain\Transfers\Transfer;
+use App\Models\Transfer;
 
 class TransferSeeder extends Seeder
 {
