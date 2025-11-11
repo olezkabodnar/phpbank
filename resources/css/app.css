@@ -90,11 +90,11 @@
 
     /* Buttons */
     .btn-primary {
-        @apply w-full bg-[#e87f0c] hover:bg-[#ff8f1c] text-white font-semibold py-3 rounded-full transition-all duration-200;
+        @apply w-full bg-[#e87f0c] hover:bg-[#ff8f1c] text-white py-3 rounded-full transition-all duration-200;
     }
 
     .btn-secondary {
-        @apply w-full block text-center bg-transparent hover:bg-[#303030] border-2 border-[#424242] text-white font-semibold py-3 rounded-full transition-all duration-200;
+        @apply w-full block text-center bg-transparent hover:bg-[#303030] border-1 border-[#424242] text-white py-3 rounded-full transition-all duration-200;
     }
 
     /* Divider */
