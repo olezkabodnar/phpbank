@@ -20,6 +20,11 @@
         @apply bg-[#212121] text-white min-h-screen flex items-center justify-center;
     }
 
+    .back-button {
+        @apply absolute top-6 left-6 inline-flex items-center gap-2
+               text-sm text-[#9e9e9e] hover:text-white transition;
+    }
+
     .auth-container {
         @apply w-full max-w-md px-8;
     }
@@ -69,11 +74,15 @@
     }
 
     .form-input {
-        @apply w-full px-4 py-3 bg-[#303030] border border-[#424242] rounded-lg text-white placeholder-[424242] focus:outline-none focus:border-[#e87f0c] focus:ring-1 focus:ring-[#e87f0c] transition;
+        @apply w-full pl-4 pr-12 py-3 bg-[#303030] border border-[#424242] rounded-full text-[#ffffff] placeholder-[#9e9e9e] focus:outline-none focus:border-[#e87f0c] focus:ring-1 focus:ring-[#e87f0c] transition;
     }
 
-    .form-input-with-icon {
-        @apply w-full pl-4 pr-12 py-3 bg-[#303030] border border-[#424242] rounded-full text-[#ffffff] placeholder-[424242] focus:outline-none focus:border-[#e87f0c] focus:ring-1 focus:ring-[#e87f0c] transition;
+    .form-input:-webkit-autofill,
+    .form-input:-webkit-autofill:hover,
+    .form-input:-webkit-autofill:focus {
+        box-shadow: 0 0 0 1000px #303030 inset;
+        -webkit-text-fill-color: #ffffff;
+        background-clip: content-box;
     }
 
     .form-icon {
@@ -246,7 +255,7 @@
 
     /* Action Buttons */
     .action-buttons {
-        @apply flex gap-4;
+        @apply flex gap-4 mt-4;
     }
 
     .btn-action {
