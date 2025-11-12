@@ -22,7 +22,8 @@ class TransferFactory extends Factory
             'amount' => $this->faker->randomFloat(2, 10, 5000),
             'transfer_date' => $this->faker->dateTimeBetween('-6 months', 'now'),
             'status' => $this->faker->randomElement(['Pending', 'Completed', 'Failed']),
-            'confirm_code' => $this->faker->optional()->uuid,
+            'confirm_code' => $this->faker->numerify('######'),
+
         ];
     }
 }
