@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class AccountFactory extends Factory
 {
-    protected $model = Account::class;
+    protected $model = \App\Models\Account::class;
 
     public function definition()
     {
