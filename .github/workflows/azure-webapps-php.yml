@@ -102,11 +102,6 @@ jobs:
         with:
           name: php-app
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_806CFEBA5373434AB1FF712A91911F32 }}
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
