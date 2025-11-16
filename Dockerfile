@@ -32,10 +32,10 @@ COPY composer.json composer.lock ./
 RUN composer install --optimize-autoloader --no-dev --no-scripts
 
 # Copy package files
-COPY package.json package-lock.json ./
+COPY package.json ./
 
-# Install Node dependencies
-RUN npm ci --only=production
+# Install Node dependencies (including dev dependencies for build tools)
+RUN npm install
 
 # Copy application code
 COPY . .
@@ -50,8 +50,9 @@ RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Copy Apache configuration
-COPY .docker/apache.conf /etc/apache2/sites-available/000-default.conf
+# Configure Apache DocumentRoot for Laravel
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf && \
+    echo '<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>' >> /etc/apache2/sites-available/000-default.conf
 
 # Optimize Laravel
 RUN php artisan config:cache && \
