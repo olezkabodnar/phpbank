@@ -46,7 +46,8 @@ RUN npm run build
 # Ensure public/build directory has correct permissions
 RUN chown -R www-data:www-data /var/www/html/public/build 2>/dev/null || true
 
-# Set proper permissions
+# Create logs directory and set proper permissions
+RUN mkdir -p /var/www/html/storage/logs
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 
@@ -69,6 +70,11 @@ fi\n\
 if [ -z "$APP_KEY" ]; then\n\
     php artisan key:generate --force\n\
 fi\n\
+\n\
+# Ensure proper permissions for storage\n\
+mkdir -p /var/www/html/storage/logs\n\
+chown -R www-data:www-data /var/www/html/storage\n\
+chmod -R 775 /var/www/html/storage\n\
 \n\
 # Run Laravel optimizations\n\
 php artisan config:cache\n\
