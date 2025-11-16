@@ -54,14 +54,33 @@ RUN a2enmod rewrite
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /etc/apache2/sites-available/000-default.conf && \
     echo '<Directory /var/www/html/public>\n    AllowOverride All\n    Require all granted\n</Directory>' >> /etc/apache2/sites-available/000-default.conf
 
-# Optimize Laravel
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    php artisan event:cache
+# Create a startup script that will run Laravel optimizations at runtime
+RUN echo '#!/bin/bash\n\
+# Download Azure MySQL SSL certificate if not exists\n\
+mkdir -p /var/www/html/storage/certificates\n\
+if [ ! -f "/var/www/html/storage/certificates/DigiCertGlobalRootG2.crt.pem" ]; then\n\
+    curl -o /var/www/html/storage/certificates/DigiCertGlobalRootG2.crt.pem https://www.digicert.com/CACerts/DigiCertGlobalRootG2.crt.pem\n\
+fi\n\
+\n\
+# Generate APP_KEY if not set\n\
+if [ -z "$APP_KEY" ]; then\n\
+    php artisan key:generate --force\n\
+fi\n\
+\n\
+# Run Laravel optimizations\n\
+php artisan config:cache\n\
+php artisan route:cache\n\
+php artisan view:cache\n\
+\n\
+# Run database migrations\n\
+php artisan migrate --force\n\
+\n\
+# Start Apache\n\
+apache2-foreground\n\
+' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
 
 # Expose port 80
 EXPOSE 80
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Use the startup script
+CMD ["/usr/local/bin/start.sh"]
