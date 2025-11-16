@@ -43,9 +43,12 @@ COPY . .
 # Build frontend assets
 RUN npm run build
 
+# Ensure public/build directory has correct permissions
+RUN chown -R www-data:www-data /var/www/html/public/build 2>/dev/null || true
+
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache /var/www/html/public
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
