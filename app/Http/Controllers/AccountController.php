@@ -199,7 +199,7 @@ class AccountController extends Controller
         }
 
         DB::transaction(function () use ($account, $request) {
-            $account->deposit($request->amount);
+            $account->deposit($request->amount, 'Account Top-Up via Card ending (' . substr($request->card_number, -4) . ')');
         });
 
         Session::put('account', $account);

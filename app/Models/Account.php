@@ -62,12 +62,20 @@ class Account extends Model
         $this->attributes['dob'] = $dob;
     }
 
-    public function deposit(float $amount)
+    public function deposit(float $amount, string $description = 'Account Top-Up')
     {
-        DB::transaction(function () use ($amount) {
-            $newBalance = bcadd((string)$this->balance, (string)$amount, 2);
-            $this->attributes['balance'] = $newBalance;
+        DB::transaction(function () use ($amount, $description){
+            $this->balance = bcadd($this->balance, $amount, 2);
             $this->save();
+
+            Transaction::create([
+                'account_id' => $this->account_id,
+                'type' => 'Deposit',
+                'amount' => $amount,
+                'balance_after' => $this->balance,
+                'transaction_date' => now(),
+                'description' => $description,
+            ]);
         });
     }
 
