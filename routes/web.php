@@ -22,7 +22,9 @@ Route::post('/account/topup', [AccountController::class, 'topupValidation'])->na
 Route::middleware(['web'])->group(function () {
     Route::get('/account', [AccountController::class, 'index'])->name('account.index');
     Route::get('/account/change-password', [AccountController::class, 'showChangePasswordForm'])->name('account.changePassword');
+    Route::post('/account/change-password', [AccountController::class, 'updatePassword'])->name('account.changePassword.update');
     Route::get('/account/change-email', [AccountController::class, 'showChangeEmailForm'])->name('account.changeEmail');
+    Route::post('/account/change-email', [AccountController::class, 'updateEmail'])->name('account.changeEmail.update');
     Route::get('/account/transactions', [AccountController::class, 'showTransactions'])->name('account.transactions');
     Route::get('/account/transfer', [AccountController::class, 'showTransferForm'])->name('account.transfer');
     Route::post('/account/transfer', [AccountController::class, 'processTransfer'])->name('account.transfer.process');

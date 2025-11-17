@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\Transfer;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 
 class AccountController extends Controller
@@ -58,6 +59,61 @@ class AccountController extends Controller
         return view('account.change-password', compact('account'));
     }
 
+    public function updatePassword(Request $request)
+    {
+        $accountId = Session::get('account_id');
+
+        if (!$accountId) {
+            return redirect()->route('login')->with('error', 'Please login first');
+        }
+
+        $account = Account::find($accountId);
+
+        if (!$account) {
+            Session::forget(['account_id', 'account']);
+            return redirect()->route('login')->with('error', 'Account not found');
+        }
+
+        // Validate the request
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ], [
+            'current_password.required' => 'Please enter your current password.',
+            'password.required' => 'Please enter a new password.',
+            'password.min' => 'New password must be at least 6 characters.',
+            'password.confirmed' => 'Password confirmation does not match.',
+        ]);
+
+        // Verify the current password
+        if (!Hash::check($request->current_password, $account->password)) {
+            return redirect()->back()
+                ->withErrors(['current_password' => 'The provided current password is incorrect.']);
+        }
+
+        // Check if new password is different from current
+        if (Hash::check($request->password, $account->password)) {
+            return redirect()->back()
+                ->withErrors(['password' => 'New password must be different from your current password.']);
+        }
+
+        try {
+            // Update the password
+            $account->password = Hash::make($request->password);
+            $account->save();
+
+            // Update session data if needed
+            Session::put('account', $account);
+
+            return redirect()->route('account.changePassword')
+                ->with('success', 'Password has been successfully updated.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withErrors(['error' => 'Failed to update password. Please try again.']);
+        }
+    }
+
     public function showChangeEmailForm()
     {
         $accountId = Session::get('account_id');
@@ -74,6 +130,60 @@ class AccountController extends Controller
         }
 
         return view('account.change-email', compact('account'));
+    }
+
+    public function updateEmail(Request $request)
+    {
+        $accountId = Session::get('account_id');
+
+        if (!$accountId) {
+            return redirect()->route('login')->with('error', 'Please login first');
+        }
+
+        $account = Account::find($accountId);
+
+        if (!$account) {
+            Session::forget(['account_id', 'account']);
+            return redirect()->route('login')->with('error', 'Account not found');
+        }
+
+        // Validate the request
+        $request->validate([
+            'password' => 'required',
+            'email' => 'required|email|unique:accounts,email,' . $account->account_id . ',account_id',
+            'email_confirmation' => 'required|same:email',
+        ], [
+            'password.required' => 'Please enter your current password.',
+            'email.required' => 'Please enter a new email address.',
+            'email.email' => 'Please enter a valid email address.',
+            'email.unique' => 'This email address is already in use.',
+            'email_confirmation.required' => 'Please confirm your new email address.',
+            'email_confirmation.same' => 'Email confirmation does not match.',
+        ]);
+
+        // Verify the current password
+        if (!Hash::check($request->password, $account->password)) {
+            return redirect()->back()
+                ->withInput($request->only('email', 'email_confirmation'))
+                ->withErrors(['password' => 'The provided password is incorrect.']);
+        }
+
+        try {
+            // Update the email
+            $account->email = $request->email;
+            $account->save();
+
+            // Update session data if needed
+            Session::put('account', $account);
+
+            return redirect()->route('account.changeEmail')
+                ->with('success', 'Email address has been successfully updated.');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput($request->only('email', 'email_confirmation'))
+                ->withErrors(['error' => 'Failed to update email address. Please try again.']);
+        }
     }
 
     public function showTransactions()
