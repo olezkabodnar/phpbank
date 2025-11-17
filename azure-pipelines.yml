@@ -54,8 +54,17 @@ steps:
 
 - script: |
     export XDEBUG_MODE=coverage
-    php artisan test --coverage --coverage-clover=coverage/clover.xml --coverage-cobertura=coverage/cobertura.xml --coverage-html=coverage/html --log-junit=coverage/junit.xml
-  displayName: 'Run Laravel tests with coverage'
+    ./vendor/bin/phpunit --coverage-html=coverage/html --coverage-clover=coverage/clover.xml --coverage-cobertura=coverage/cobertura.xml --log-junit=coverage/junit.xml --coverage-text=coverage/coverage.txt
+    echo "Verifying coverage files were created:"
+    ls -la coverage/
+    echo "Checking if HTML coverage was generated:"
+    if [ -d "coverage/html" ]; then
+      echo "HTML coverage directory exists"
+      ls -la coverage/html/
+    else
+      echo "HTML coverage directory not found"
+    fi
+  displayName: 'Run PHPUnit tests with coverage'
 
 - task: PublishTestResults@2
   condition: always()
@@ -67,8 +76,27 @@ steps:
   displayName: 'Publish test results'
 
 - script: |
+    echo "==== Code Coverage Summary ===="
+    if [ -f coverage/coverage.txt ]; then
+      cat coverage/coverage.txt
+    else
+      echo "Coverage text file not found"
+    fi
+    echo "================================"
+    echo "Available files in coverage directory:"
+    ls -la coverage/ || echo "Coverage directory not found"
+    echo "================================"
+    echo "If HTML coverage was generated, it's available in the artifacts."
+  condition: always()
+  displayName: 'Display coverage summary'
+
+- script: |
     echo "Code coverage summary:"
-    cat coverage/coverage.txt
+    if [ -f coverage/coverage.txt ]; then
+      cat coverage/coverage.txt
+    else
+      echo "Coverage text file not found"
+    fi
   condition: always()
   displayName: 'Display coverage summary'
 
