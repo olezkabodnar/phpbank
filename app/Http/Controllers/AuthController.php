@@ -15,7 +15,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-   
     public function login(Request $request)
     {
         $request->validate([
@@ -37,11 +36,18 @@ class AuthController extends Controller
             ]);
         }
 
-        // Store account in session table
-        Session::put('account_id', $account->account_id);
-        Session::put('account', $account);
+        // Check credentials
+        if (Hash::check($request->password, $account->password)) {
+            // Normal login
+            Session::put('account_id', $account->account_id);
+            Session::put('account', $account);
 
-        return redirect()->route('account.index')->with('success', 'Login successful!');
+            return redirect()->route('account.index')->with('success', 'Login successful!');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials are incorrect.',
+        ]);
     }
 
    //display register form

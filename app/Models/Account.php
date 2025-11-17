@@ -47,6 +47,11 @@ class Account extends Model
         return $this->hasMany(Transfer::class, 'to_account_id', 'account_id');
     }
 
+    public function twoFACodes()
+    {
+        return $this->hasMany(TwoFACode::class, 'account_id', 'account_id');
+    }
+
     public function setDobAttribute($value)
     {
         $dob = Carbon::parse($value);
@@ -60,7 +65,8 @@ class Account extends Model
     public function deposit(float $amount)
     {
         DB::transaction(function () use ($amount) {
-            $this->balance = bcadd($this->balance, (string)$amount, 2);
+            $newBalance = bcadd((string)$this->balance, (string)$amount, 2);
+            $this->attributes['balance'] = $newBalance;
             $this->save();
         });
     }
