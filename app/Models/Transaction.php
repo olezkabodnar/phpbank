@@ -17,15 +17,18 @@ class Transaction extends Model
         'account_id',
         'type',
         'amount',
-        'transaction_date',
-        'description',
         'balance_after',
+        'transaction_date',
+        'description'
     ];
 
     protected $casts = [
+        'account_id' => 'integer',
+        'type' => 'string',
         'amount' => 'decimal:2',
-        'transaction_date' => 'datetime',
         'balance_after' => 'decimal:2',
+        'transaction_date' => 'datetime',
+        'description' => 'string',
     ];
 
     public function account()
