@@ -224,29 +224,32 @@ class AccountController extends Controller
     }
 
     //fix email change
+    /*
+    public function updateEmail(Request $request)
+    {
+        $accountId = Session::get('account_id');
+        if (!$accountId) return redirect()->route('login')->with('error', 'Please login first');
 
-    // public function updateEmail(Request $request)
-    // {
-    //     $accountId = Session::get('account_id');
-    //     if (!$accountId) return redirect()->route('login')->with('error', 'Please login first');
+        $account = Account::find($accountId);
+        if (!$account) return redirect()->route('login')->with('error', 'Account not found');
 
-    //     $account = Account::find($accountId);
-    //     if (!$account) return redirect()->route('login')->with('error', 'Account not found');
+        $request->validate([
+            'password' => ['required'],
+            'email' => ['required','email','max:50','confirmed', Rule::unique('accounts','email')->ignore($account->id)],
+        ], [
+            'email.confirmed' => 'Emails do not match',
+        ]);
 
-    //     $request->validate([
-    //         'password' => ['required'],
-    //         'email' => ['required','email','max:50','confirmed', Rule::unique('accounts','email')->ignore($account->id)],
-    //     ], [
-    //         'email.confirmed' => 'Emails do not match',
-    //     ]);
+        if (!Hash::check($request->password, $account->password)) {
+            return back()->withErrors(['password' => 'Wrong password'])->withInput();
+        }
 
-    //     if (!Hash::check($request->password, $account->password)) {
-    //         return back()->withErrors(['password' => 'Wrong password'])->withInput();
-    //     }
+        $account->email = $request->email;
+        $account->save();
 
-    //     $account->email = $request->email;
-    //     $account->save();
+        return back()->with('success', 'Email updated');
+    } 
+    */
 
-    //     return back()->with('success', 'Email updated');
-    // }
+    //add password change function
 }
