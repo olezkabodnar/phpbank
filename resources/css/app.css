@@ -177,7 +177,7 @@
     }
 
     .sidebar-link {
-        @apply flex items-center gap-3 px-4 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition;
+        @apply flex items-center gap-3 -mr-6 -ml-7 pr-6 pl-7 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition;
     }
 
     .sidebar-link.active {
@@ -185,7 +185,7 @@
     }
 
     .sidebar-footer {
-        @apply mt-auto p-6 space-y-4;
+        @apply mt-auto p-6 space-y-5;
     }
 
     .sidebar-footer-link {
@@ -193,11 +193,11 @@
     }
 
     .sidebar-button-form {
-        @apply w-full;
+        @apply -ml-7 -mr-6;
     }
 
     .sidebar-button {
-        @apply w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition border-none bg-transparent cursor-pointer;
+        @apply w-full flex items-center gap-3 pl-7 pr-6 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition border-none bg-transparent cursor-pointer text-left;
     }
 
     /* Main Content */

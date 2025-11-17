@@ -15,6 +15,7 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/account/topup', [AccountController::class, 'topupValidation'])->name('account.topup.post');
+Route::post('/account/change-email', [AccountController::class, 'updateEmail'])->name('account.changeEmail.update');
 
 // account Routes
 Route::get('/account', [AccountController::class, 'index'])->name('account.index');
