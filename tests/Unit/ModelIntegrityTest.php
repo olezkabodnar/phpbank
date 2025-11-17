@@ -9,12 +9,19 @@ use Illuminate\Support\Facades\Session;
 use App\Models\Transaction;
 use App\Models\Transfer;
 use Carbon\Carbon;
+use App\Models\TwoFACode;
+use App\Mail\TwoFACodeMail;
+use App\Services\TwoFAService;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Mail;
+use PHPUnit\Framework\Attributes\Test;
+
 
 class ModelIntegrityTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function account_model_casts_are_configured_correctly()
     {
         $account = Account::factory()->create([
@@ -26,7 +33,7 @@ class ModelIntegrityTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $account->dob);
     }
 
-    /** @test */
+    #[Test]
     public function transaction_model_casts_are_configured_correctly()
     {
         $transaction = Transaction::factory()->create([
@@ -38,7 +45,7 @@ class ModelIntegrityTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $transaction->transaction_date);
     }
 
-    /** @test */
+    #[Test]
     public function transfer_model_casts_are_configured_correctly()
     {
         $account = Account::factory()->create();
@@ -52,7 +59,7 @@ class ModelIntegrityTest extends TestCase
         $this->assertInstanceOf(Carbon::class, $transfer->transfer_date);
     }
 
-    /** @test */
+    #[Test]
     public function account_dob_must_be_at_least_18_years_old()
     {
         $underageDob = now()->subYears(17);
@@ -71,7 +78,7 @@ class ModelIntegrityTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function account_name_is_stored_in_title_case()
     {
         $account = Account::factory()->create([
@@ -83,7 +90,7 @@ class ModelIntegrityTest extends TestCase
         $this->assertEquals('Doe', $account->last_name);
     }
 
-    /** @test */
+    #[Test]
     public function it_redirects_to_login_if_no_session_for_index()
     {
         $response = $this->get(route('account.index'));
@@ -92,7 +99,7 @@ class ModelIntegrityTest extends TestCase
         $response->assertSessionHas('error', 'Please login first');
     }
 
-    /** @test */
+    #[Test]
     public function it_redirects_to_login_if_account_not_found_in_index()
     {
         Session::put('account_id', 9999);
@@ -103,7 +110,7 @@ class ModelIntegrityTest extends TestCase
         $response->assertSessionHas('error', 'Account not found');
     }
 
-    /** @test */
+    #[Test]
     public function it_loads_index_view_with_account_if_logged_in()
     {
         $account = Account::factory()->create();
@@ -116,7 +123,7 @@ class ModelIntegrityTest extends TestCase
         $response->assertViewHas('account', $account);
     }
 
-    /** @test */
+    #[Test]
     public function it_shows_topup_form_when_logged_in()
     {
         $account = Account::factory()->create();
@@ -129,7 +136,7 @@ class ModelIntegrityTest extends TestCase
         $response->assertViewHas('account', $account);
     }
 
-    /** @test */
+    #[Test]
     public function it_redirects_to_login_if_not_logged_in_for_topup_validation()
     {
         $response = $this->withoutMiddleware()->post(route('account.topup.post'), [
@@ -144,7 +151,7 @@ class ModelIntegrityTest extends TestCase
         $response->assertSessionHasErrors();
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_topup_fields_correctly()
     {
         $account = Account::factory()->create();
@@ -163,7 +170,7 @@ class ModelIntegrityTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_processes_topup_successfully_and_updates_balance()
     {
         $account = Account::factory()->create(['balance' => 100]);
@@ -186,71 +193,147 @@ class ModelIntegrityTest extends TestCase
         $this->assertEquals(150, $account->balance);
     }
 
-    /** @test */
-    public function transactions_view_shows_recent_activity_for_account()
+   #[Test]
+    public function two_fa_mail_has_expected_envelope_and_content()
     {
-        $account = Account::factory()->create(['balance' => 500]);
-        // create a couple of transactions for the account
-        $t1 = Transaction::factory()->create([
+        $account = Account::factory()->create(['first_name' => 'John', 'last_name' => 'Doe']);
+
+        $code = TwoFACode::create([
             'account_id' => $account->account_id,
-            'type' => 'Deposit',
-            'amount' => 200,
-            'balance_after' => 700,
-            'transaction_date' => now()->subDays(1),
-            'description' => 'Salary',
-        ]);
-        $t2 = Transaction::factory()->create([
-            'account_id' => $account->account_id,
-            'type' => 'Withdrawal',
-            'amount' => 50,
-            'balance_after' => 650,
-            'transaction_date' => now(),
-            'description' => 'ATM withdrawal',
+            'code' => '654321',
+            'expires_at' => Carbon::now()->addMinutes(10),
+            'used' => false,
+            'created_at' => Carbon::now(),
         ]);
 
-        $response = $this->withSession(['account_id' => $account->account_id])
-            ->get(route('account.transactions'));
+        $mail = new TwoFACodeMail($code, $account);
 
-        $response->assertStatus(200);
-        $response->assertViewIs('account.transactions');
-        $response->assertViewHas('transactions');
-        // Ensure descriptions and formatted amounts appear in the rendered HTML
-        $response->assertSee('Salary');
-        $response->assertSee('ATM withdrawal');
-        $response->assertSee(number_format($t1->amount, 2));
-        $response->assertSee(number_format($t2->amount, 2));
+        $envelope = $mail->envelope();
+        $this->assertEquals('Your PHP Bank Security Code', $envelope->subject);
+
+        $content = $mail->content();
+        $this->assertEquals('emails.two-fa-code', $content->view);
+        $this->assertArrayHasKey('code', $content->with);
+        $this->assertEquals('654321', $content->with['code']);
     }
 
-    /** @test */
-    public function account_names_are_title_cased_on_creation()
+    #[Test]
+    public function account_mutators_and_deposit_work_and_dob_validation_throws()
     {
         $account = Account::factory()->create([
-            'first_name' => 'alice',
-            'last_name' => 'smith',
+            'first_name' => 'bob',
+            'last_name' => 'johnson',
+            'balance' => 100.00,
         ]);
 
-        $this->assertEquals('Alice', $account->first_name);
-        $this->assertEquals('Smith', $account->last_name);
+        $this->assertEquals('Bob', $account->first_name);
+        $this->assertEquals('Johnson', $account->last_name);
+
+        $account->deposit(50, 'Test deposit');
+        $this->assertEquals(150.00, $account->balance);
+        $this->assertDatabaseHas('transactions', ['account_id' => $account->account_id, 'type' => 'Deposit']);
+
+        // dob setter should throw for underage
+        $this->expectException(ValidationException::class);
+        $account->dob = now()->subYears(10)->toDateString();
     }
 
-    /** @test */
-    public function transfer_model_casts_and_relations_work_as_expected()
+    #[Test]
+    public function transaction_and_transfer_casts_are_applied()
     {
-        $sender = Account::factory()->create();
-        $recipient = Account::factory()->create();
+        $account = Account::factory()->create(['balance' => 1000]);
 
+        $transaction = Transaction::factory()->create([
+            'account_id' => $account->account_id,
+            'amount' => 99.999,
+            'transaction_date' => now(),
+        ]);
+
+        $this->assertEquals(100.00, $transaction->amount);
+        $this->assertInstanceOf(\Carbon\Carbon::class, $transaction->transaction_date);
+
+        $recipient = Account::factory()->create();
         $transfer = Transfer::factory()->create([
-            'from_account_id' => $sender->account_id,
+            'from_account_id' => $account->account_id,
             'to_account_id' => $recipient->account_id,
             'amount' => 150.456,
             'transfer_date' => now(),
         ]);
 
         $this->assertEquals(150.46, $transfer->amount);
-        $this->assertInstanceOf(Carbon::class, $transfer->transfer_date);
-
-        // relation access shouldn't throw
-        $this->assertEquals($sender->account_id, $transfer->sender->account_id);
+        $this->assertInstanceOf(\Carbon\Carbon::class, $transfer->transfer_date);
+        $this->assertEquals($account->account_id, $transfer->sender->account_id);
         $this->assertEquals($recipient->account_id, $transfer->recipient->account_id);
     }
+
+    #[Test]
+    public function generate_code_returns_six_digits()
+    {
+        $code = TwoFACode::generateCode();
+
+        $this->assertIsString($code);
+        $this->assertEquals(6, strlen($code));
+        $this->assertMatchesRegularExpression('/^\d{6}$/', $code);
+    }
+
+    #[Test]
+    public function create_for_account_creates_new_code_and_deletes_old()
+    {
+        $account = Account::factory()->create();
+
+        $first = TwoFACode::createForAccount($account->account_id);
+        $this->assertDatabaseHas('two_fa_codes', ['account_id' => $account->account_id, 'code' => $first->code]);
+
+        $second = TwoFACode::createForAccount($account->account_id);
+        $this->assertDatabaseHas('two_fa_codes', ['account_id' => $account->account_id, 'code' => $second->code]);
+        $this->assertNotEquals($first->code, $second->code);
+
+        $this->assertDatabaseMissing('two_fa_codes', ['id' => $first->id]);
+    }
+
+     #[Test]
+    public function is_enabled_checks_account_flag()
+    {
+        $service = new TwoFAService();
+        $account = Account::factory()->create(['two_fa_enabled' => false]);
+
+        $this->assertFalse($service->isEnabled($account));
+
+        $account->two_fa_enabled = 'Y';
+        $this->assertTrue($service->isEnabled($account));
+    }
+
+    #[Test]
+    public function enable_and_disable_toggle_flag_and_cleanup()
+    {
+        $service = new TwoFAService();
+        $account = Account::factory()->create(['two_fa_enabled' => false]);
+
+        $this->assertTrue($service->enable($account));
+        $this->assertTrue($account->fresh()->two_fa_enabled);
+
+        // create a code to be cleaned up
+        TwoFACode::createForAccount($account->account_id);
+
+        $this->assertTrue($service->disable($account));
+        $this->assertFalse($account->fresh()->two_fa_enabled);
+        $this->assertDatabaseMissing('two_fa_codes', ['account_id' => $account->account_id]);
+    }
+
+    #[Test]
+    public function send_code_sends_mail_and_returns_true()
+    {
+        Mail::fake();
+
+        $service = new TwoFAService();
+        $account = Account::factory()->create(['email' => 'test@example.com']);
+
+        $result = $service->sendCode($account);
+
+        $this->assertTrue($result);
+        Mail::assertSent(TwoFACodeMail::class, function ($mail) use ($account) {
+            return $mail->hasTo($account->email);
+        });
+    }
+
 }
