@@ -46,5 +46,35 @@ steps:
 - script: php artisan key:generate
   displayName: 'Generate application key'
 
-- script: php artisan test
-  displayName: 'Run Laravel tests'
+- script: |
+    sudo apt-get update
+    sudo apt-get install -y php$(phpVersion)-xdebug
+    mkdir -p coverage
+  displayName: 'Install Xdebug and create coverage directory'
+
+- script: |
+    export XDEBUG_MODE=coverage
+    php artisan test --coverage --coverage-clover=coverage/clover.xml --coverage-cobertura=coverage/cobertura.xml --coverage-html=coverage/html --log-junit=coverage/junit.xml
+  displayName: 'Run Laravel tests with coverage'
+
+- task: PublishTestResults@2
+  condition: always()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: 'coverage/junit.xml'
+    testRunTitle: 'Laravel Tests'
+    mergeTestResults: true
+  displayName: 'Publish test results'
+
+- script: |
+    echo "Code coverage summary:"
+    cat coverage/coverage.txt
+  condition: always()
+  displayName: 'Display coverage summary'
+
+- task: PublishPipelineArtifact@0
+  condition: always()
+  inputs:
+    targetPath: 'coverage'
+    artifactName: 'CodeCoverage'
+  displayName: 'Publish coverage artifacts'
