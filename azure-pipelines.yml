@@ -78,7 +78,7 @@ steps:
 
 - script: |
     if [ -f "$(System.DefaultWorkingDirectory)/coverage/cobertura.xml" ] && [ -d "$(System.DefaultWorkingDirectory)/coverage/html" ]; then
-      echo "##vso[codecoverage.publish codecoverageTool=Cobertura;summaryFileLocation=$(System.DefaultWorkingDirectory)/coverage/cobertura.xml;reportDirectory=$(System.DefaultWorkingDirectory)/coverage/html;]"
+      echo "##vso[codecoverage.publish summaryfile=$(System.DefaultWorkingDirectory)/coverage/cobertura.xml;codecoveragetool=cobertura;reportdirectory=$(System.DefaultWorkingDirectory)/coverage/html;]"
     else
       echo "Coverage files not found, skipping coverage publication"
       echo "Cobertura file exists: $(test -f coverage/cobertura.xml && echo 'Yes' || echo 'No')"
