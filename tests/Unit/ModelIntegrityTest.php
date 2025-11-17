@@ -71,37 +71,6 @@ class ModelIntegrityTest extends TestCase
         $this->assertTrue(true);
     }
 
-    // /** @test */
-    // public function account_relationships_are_defined_correctly()
-    // {
-    //     $account = Account::factory()->create();
-    //     $transaction = Transaction::factory()->create(['account_id' => $account->id]);
-    //     $transferOut = Transfer::factory()->create(['from_account_id' => $account->id]);
-    //     $transferIn = Transfer::factory()->create(['to_account_id' => $account->id]);
-
-    //     $this->assertTrue($account->transactions->contains($transaction));
-    //     $this->assertTrue($account->transfersSent->contains($transferOut));
-    //     $this->assertTrue($account->transfersReceived->contains($transferIn));
-    // }
-
-    // /** @test */
-    // public function balance_changes_should_remain_consistent_with_transactions()
-    // {
-    //     $account = Account::factory()->create(['balance' => 1000]);
-
-    //     $deposit = Transaction::factory()->create([
-    //         'account_id' => $account->id,
-    //         'type' => 'Deposit',
-    //         'amount' => 200,
-    //         'balance_after' => 1200,
-    //     ]);
-
-    //     $account->refresh();
-
-    //     $this->assertEquals(1200, $deposit->balance_after);
-    //     $this->assertEquals(1200, $account->balance);
-    // }
-
     /** @test */
     public function account_name_is_stored_in_title_case()
     {
@@ -217,12 +186,71 @@ class ModelIntegrityTest extends TestCase
         $this->assertEquals(150, $account->balance);
     }
 
-    // /** @test */
-    // public function it_returns_recover_password_view()
-    // {
-    //     $response = $this->get(route('password.recovery'));
+    /** @test */
+    public function transactions_view_shows_recent_activity_for_account()
+    {
+        $account = Account::factory()->create(['balance' => 500]);
+        // create a couple of transactions for the account
+        $t1 = Transaction::factory()->create([
+            'account_id' => $account->account_id,
+            'type' => 'Deposit',
+            'amount' => 200,
+            'balance_after' => 700,
+            'transaction_date' => now()->subDays(1),
+            'description' => 'Salary',
+        ]);
+        $t2 = Transaction::factory()->create([
+            'account_id' => $account->account_id,
+            'type' => 'Withdrawal',
+            'amount' => 50,
+            'balance_after' => 650,
+            'transaction_date' => now(),
+            'description' => 'ATM withdrawal',
+        ]);
 
-    //     $response->assertStatus(200);
-    //     $response->assertViewIs('account.recover-password');
-    // }
+        $response = $this->withSession(['account_id' => $account->account_id])
+            ->get(route('account.transactions'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('account.transactions');
+        $response->assertViewHas('transactions');
+        // Ensure descriptions and formatted amounts appear in the rendered HTML
+        $response->assertSee('Salary');
+        $response->assertSee('ATM withdrawal');
+        $response->assertSee(number_format($t1->amount, 2));
+        $response->assertSee(number_format($t2->amount, 2));
+    }
+
+    /** @test */
+    public function account_names_are_title_cased_on_creation()
+    {
+        $account = Account::factory()->create([
+            'first_name' => 'alice',
+            'last_name' => 'smith',
+        ]);
+
+        $this->assertEquals('Alice', $account->first_name);
+        $this->assertEquals('Smith', $account->last_name);
+    }
+
+    /** @test */
+    public function transfer_model_casts_and_relations_work_as_expected()
+    {
+        $sender = Account::factory()->create();
+        $recipient = Account::factory()->create();
+
+        $transfer = Transfer::factory()->create([
+            'from_account_id' => $sender->account_id,
+            'to_account_id' => $recipient->account_id,
+            'amount' => 150.456,
+            'transfer_date' => now(),
+        ]);
+
+        $this->assertEquals(150.46, $transfer->amount);
+        $this->assertInstanceOf(Carbon::class, $transfer->transfer_date);
+
+        // relation access shouldn't throw
+        $this->assertEquals($sender->account_id, $transfer->sender->account_id);
+        $this->assertEquals($recipient->account_id, $transfer->recipient->account_id);
+    }
 }
