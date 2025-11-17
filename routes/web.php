@@ -15,8 +15,6 @@ Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('regi
 Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/account/topup', [AccountController::class, 'topupValidation'])->name('account.topup.post');
-Route::post('/account/change-email', [AccountController::class, 'updateEmail'])->name('account.changeEmail.update');
-Route::post('/account/change-password', [AccountController::class, 'changePassword'])->name('account.changePassword.update');
 
 // account Routes
 Route::get('/account', [AccountController::class, 'index'])->name('account.index');
@@ -25,6 +23,7 @@ Route::get('/account/change-email', [AccountController::class, 'showChangeEmailF
 Route::get('/account/2fa', [AccountController::class, 'show2FAForm'])->name('account.twoFA');
 Route::get('/account/transactions', [AccountController::class, 'showTransactions'])->name('account.transactions');
 Route::get('/account/transfer', [AccountController::class, 'showTransferForm'])->name('account.transfer');
+Route::post('/account/transfer', [AccountController::class, 'processTransfer'])->name('account.transfer.process');
 Route::get('/account/topup', [AccountController::class, 'showTopupForm'])->name('account.topup');
 Route::get('/password-recovery', [AccountController::class, 'showPasswordRecovery'])->name('password.recovery');
 

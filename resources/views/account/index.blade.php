@@ -23,8 +23,19 @@
                 </div>
                 <div class="balance-right">
                     <p class="balance-label">Last Transaction:</p>
-                    <p class="balance-amount">-$200</p>
-                    <p class="balance-subtext">(funds transfer)</p>
+                    @if($lastTransaction)
+                        <p class="balance-amount">
+                            @if($lastTransaction->amount >= 0)
+                                +${{ number_format($lastTransaction->amount, 0, '', ' ') }}
+                            @else
+                                ${{ number_format($lastTransaction->amount, 0, '', ' ') }}
+                            @endif
+                        </p>
+                        <p class="balance-subtext">({{ strtolower($lastTransaction->type) }})</p>
+                    @else
+                        <p class="balance-amount">No transactions</p>
+                        <p class="balance-subtext">(yet)</p>
+                    @endif
                 </div>
             </div>
         </div>

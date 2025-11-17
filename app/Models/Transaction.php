@@ -10,14 +10,21 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'transaction_id';
     public $timestamps = false;
 
-    protected $casts = [
+    protected $fillable = [
         'account_id',
         'type',
+        'amount',
+        'transaction_date',
+        'description',
+        'balance_after',
+    ];
+
+    protected $casts = [
         'amount' => 'decimal:2',
         'transaction_date' => 'datetime',
-        'description',
         'balance_after' => 'decimal:2',
     ];
 
@@ -25,4 +32,6 @@ class Transaction extends Model
     {
         return $this->belongsTo(Account::class, 'account_id', 'account_id');
     }
+
+
 }
