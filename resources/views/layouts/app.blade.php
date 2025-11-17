@@ -22,7 +22,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="{{ route('account.twoFA') }}" class="sidebar-link {{ request()->routeIs('account.twoFA') ? 'active' : '' }}">
+                    <a href="{{ route('2fa.settings') }}" class="sidebar-link {{ request()->routeIs('2fa.settings') ? 'active' : '' }}">
                         <svg class="w-5 h-5" viewBox="0 0 21.79 25.14">
                             <path d="M17.47,8.57h-.34v-2.33h0c0-3.44-2.79-6.24-6.24-6.24s-6.24,2.79-6.24,6.24v2.33h-.34c-2.38,0-4.32,1.93-4.32,4.32v7.94c0,2.38,1.93,4.32,4.32,4.32h13.15c2.38,0,4.32-1.93,4.32-4.32v-7.94c0-2.38-1.93-4.32-4.32-4.32ZM6.91,8.57v-2.33h0c0-2.2,1.79-3.99,3.99-3.99s3.99,1.79,3.99,3.99h0v2.33h-7.98Z"
                                 fill="currentColor"/>

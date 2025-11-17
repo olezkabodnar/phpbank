@@ -76,24 +76,6 @@ class AccountController extends Controller
         return view('account.change-email', compact('account'));
     }
 
-    public function show2FAForm()
-    {
-        $accountId = Session::get('account_id');
-
-        if (!$accountId) {
-            return redirect()->route('login')->with('error', 'Please login first');
-        }
-
-        $account = Account::find($accountId);
-
-        if (!$account) {
-            Session::forget(['account_id', 'account']);
-            return redirect()->route('login')->with('error', 'Account not found');
-        }
-
-        return view('account.two-fa', compact('account'));
-    }
-
     public function showTransactions()
     {
         $accountId = Session::get('account_id');
