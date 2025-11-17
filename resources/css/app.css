@@ -109,7 +109,7 @@
     }
 
     .btn-secondary {
-        @apply w-full block text-center bg-transparent hover:bg-[#303030] border-1 border-[#424242] text-white py-3 rounded-full transition-all duration-200;
+        @apply w-full block text-center bg-transparent hover:bg-[#303030] border border-[#424242] text-white py-3 rounded-full transition-all duration-200;
     }
 
     /* Divider */
@@ -161,7 +161,7 @@
 
     /* Sidebar */
     .sidebar {
-        @apply w-56 bg-[#1a1a1a] border-r border-[#2d2d2d] flex flex-col;
+        @apply w-56 bg-[#181818] flex flex-col;
     }
 
     .sidebar-header {
@@ -185,7 +185,7 @@
     }
 
     .sidebar-footer {
-        @apply mt-auto p-6 border-t border-[#2d2d2d] space-y-4;
+        @apply mt-auto p-6 space-y-4;
     }
 
     .sidebar-footer-link {
@@ -219,7 +219,7 @@
 
     /* Cards */
     .card {
-        @apply bg-[#2d2d2d] rounded-2xl p-8 mb-8 max-w-2xl;
+        @apply bg-[#303030] rounded-2xl p-8 mb-8 max-w-2xl;
     }
 
     .card-title {
@@ -227,7 +227,7 @@
     }
 
     .card-content {
-        @apply bg-[#1a1a1a] rounded-xl p-6;
+        @apply bg-[#212121] rounded-xl px-6 min-h-50 flex items-center;
     }
 
     .card-grid {
@@ -236,7 +236,7 @@
 
     /* Balance Display */
     .balance-flex {
-        @apply flex justify-between items-start;
+        @apply flex justify-between;
     }
 
     .balance-section {
