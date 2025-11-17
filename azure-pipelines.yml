@@ -73,7 +73,13 @@ steps:
     testResultsFiles: 'coverage/junit.xml'
     testRunTitle: 'Laravel Tests'
     mergeTestResults: true
+    publishRunAttachments: true
   displayName: 'Publish test results'
+
+- script: |
+    echo "##vso[codecoverage.publish codecoverageTool=Cobertura;summaryFileLocation=coverage/cobertura.xml;reportDirectory=coverage/html;]"
+  condition: always()
+  displayName: 'Publish code coverage via logging command'
 
 - script: |
     echo "==== Code Coverage Summary ===="
@@ -86,17 +92,6 @@ steps:
     echo "Available files in coverage directory:"
     ls -la coverage/ || echo "Coverage directory not found"
     echo "================================"
-    echo "If HTML coverage was generated, it's available in the artifacts."
-  condition: always()
-  displayName: 'Display coverage summary'
-
-- script: |
-    echo "Code coverage summary:"
-    if [ -f coverage/coverage.txt ]; then
-      cat coverage/coverage.txt
-    else
-      echo "Coverage text file not found"
-    fi
   condition: always()
   displayName: 'Display coverage summary'
 
