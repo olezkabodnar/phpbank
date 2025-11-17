@@ -23,8 +23,19 @@
                 </div>
                 <div class="balance-right">
                     <p class="balance-label">Last Transaction:</p>
-                    <p class="balance-amount">-$200</p>
-                    <p class="balance-subtext">(funds transfer)</p>
+                    @if($lastTransaction)
+                        <p class="balance-amount">
+                            @if($lastTransaction->amount >= 0)
+                                +${{ number_format($lastTransaction->amount, 0, '', ' ') }}
+                            @else
+                                ${{ number_format($lastTransaction->amount, 0, '', ' ') }}
+                            @endif
+                        </p>
+                        <p class="balance-subtext">({{ strtolower($lastTransaction->type) }})</p>
+                    @else
+                        <p class="balance-amount">No transactions</p>
+                        <p class="balance-subtext">(yet)</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -60,20 +71,25 @@
 
         <div class="card-grid">
             <!-- User Email Section -->
-            <div class="card-content">
+            <div class="card-content-account-details">
                 <p class="detail-label">User Email</p>
                 <p class="detail-value detail-highlight mb-6">{{ $account->email }}</p>
 
                 <div class="detail-flex">
                     <span>password: ********</span>
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </div>
+
+                <div class="card-corner">
+                    <svg viewBox="0 0 23 26" aria-hidden="true">
+                            <circle cx="11.5" cy="7" r="7" fill="currentColor" stroke="none" stroke-width="2"/>
+                            <path d="M0,26v-4.23c0-3.74,3.89-6.77,8.68-6.77h5.63c4.8,0,8.68,3.03,8.68,6.77v4.23"
+                                fill="currentColor" stroke="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                     </svg>
                 </div>
             </div>
 
             <!-- Account Security Section -->
-            <div class="card-content">
+            <div class="card-content-account-details">
                 <p class="detail-label">Account Security</p>
                 <div class="detail-row">
                     <p class="detail-label">Last Login:</p>
@@ -81,16 +97,10 @@
                 </div>
 
                 <div class="detail-flex">
-                    <span>2FA Status: 
-                        <span class="{{ $account->two_fa_enabled ? 'status-active' : 'status-inactive' }}">
-                            {{ $account->two_fa_enabled ? 'Active' : 'Disabled' }}
-                        </span>
-                    </span>
-                    <a href="{{ route('2fa.settings') }}" class="text-blue-400 hover:text-blue-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                    </a>
+                    <span>2FA Status: <span class="status-active">Active</span></span>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
                 </div>
             </div>
         </div>

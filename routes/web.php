@@ -25,6 +25,7 @@ Route::middleware(['web'])->group(function () {
     Route::get('/account/change-email', [AccountController::class, 'showChangeEmailForm'])->name('account.changeEmail');
     Route::get('/account/transactions', [AccountController::class, 'showTransactions'])->name('account.transactions');
     Route::get('/account/transfer', [AccountController::class, 'showTransferForm'])->name('account.transfer');
+    Route::post('/account/transfer', [AccountController::class, 'processTransfer'])->name('account.transfer.process');
     Route::get('/account/topup', [AccountController::class, 'showTopupForm'])->name('account.topup');
     Route::get('/2fa/settings', [TwoFAController::class, 'settings'])->name('2fa.settings');
     Route::post('/2fa/toggle', [TwoFAController::class, 'toggle'])->name('2fa.toggle');

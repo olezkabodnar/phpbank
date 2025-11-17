@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Account;
 use Illuminate\Support\Facades\Session;
 use App\Models\Transaction;
+use App\Models\Transfer;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 
 class AccountController extends Controller
@@ -27,7 +29,13 @@ class AccountController extends Controller
             return redirect()->route('login')->with('error', 'Account not found');
         }
 
-        return view('account.index', compact('account'));
+        // Get the last transaction for this account
+        $lastTransaction = Transaction::where('account_id', $accountId)
+            ->orderBy('transaction_date', 'desc')
+            ->orderBy('transaction_id', 'desc')
+            ->first();
+
+        return view('account.index', compact('account', 'lastTransaction'));
                 
         
 
@@ -198,6 +206,117 @@ class AccountController extends Controller
 
         return redirect()->back()->with('success', 'Top-up successful! New balance: €' . number_format($account->balance, 2));
 
+    }
+
+    public function processTransfer(Request $request)
+    {
+        $accountId = Session::get('account_id');
+        if (!$accountId) {
+            return redirect()->route('login')->with('error', 'Please login first');
+        }
+
+        $account = Account::find($accountId);
+        if (!$account) {
+            Session::forget('account_id');
+            return redirect()->route('login')->with('error', 'Account not found');
+        }
+
+        // Validate fields for internal transfer only
+        $rules = [
+            'transfer_type' => 'required|in:internal',
+            'amount' => 'required|numeric|min:1|max:999999.99',
+            'reference' => 'nullable|string|max:100',
+            'recipient_email' => [
+                'required',
+                'email',
+                'exists:accounts,email',
+                function ($attribute, $value, $fail) use ($account) {
+                    if ($value === $account->email) {
+                        $fail('You cannot transfer to your own account.');
+                    }
+                },
+            ],
+        ];
+
+        $messages = [
+            'amount.required' => 'Please enter a transfer amount.',
+            'amount.min' => 'Minimum transfer amount is $1.00.',
+            'amount.max' => 'Maximum transfer amount is $999,999.99.',
+            'recipient_email.required' => 'Please enter the recipient\'s email address.',
+            'recipient_email.email' => 'Please enter a valid email address.',
+            'recipient_email.exists' => 'No account found with this email address.',
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
+
+        // Check if sufficient balance
+        if ($validatedData['amount'] > $account->balance) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['amount' => 'Insufficient balance for this transfer.']);
+        }
+
+        try {
+            DB::transaction(function () use ($account, $validatedData) {
+                $this->processInternalTransfer($account, $validatedData);
+            });
+
+            return redirect()->route('account.index')
+                ->with('success', 'Transfer of $' . number_format($validatedData['amount'], 2) . ' completed successfully!');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['error' => 'Transfer failed. Please try again later.']);
+        }
+    }
+
+    private function processInternalTransfer($senderAccount, $data)
+    {
+        // Find recipient account
+        $recipientAccount = Account::where('email', $data['recipient_email'])->first();
+        
+        if (!$recipientAccount) {
+            throw new \Exception('Recipient account not found');
+        }
+
+        // Create transfer record
+        $transfer = Transfer::create([
+            'from_account_id' => $senderAccount->account_id,
+            'to_account_id' => $recipientAccount->account_id,
+            'amount' => $data['amount'],
+            'transfer_date' => Carbon::now(),
+            'status' => 'Completed',
+            'confirm_code' => null,
+        ]);
+
+        // Update balances
+        $senderAccount->balance = bcadd($senderAccount->balance, '-' . $data['amount'], 2);
+        $senderAccount->save();
+
+        $recipientAccount->balance = bcadd($recipientAccount->balance, $data['amount'], 2);
+        $recipientAccount->save();
+
+        // Create transaction records
+        Transaction::create([
+            'account_id' => $senderAccount->account_id,
+            'type' => 'Transfer Out',
+            'amount' => '-' . $data['amount'],
+            'balance_after' => $senderAccount->balance,
+            'transaction_date' => Carbon::now(),
+            'description' => 'Transfer to ' . $recipientAccount->email . 
+                           (isset($data['reference']) && $data['reference'] ? ' - ' . $data['reference'] : ''),
+        ]);
+
+        Transaction::create([
+            'account_id' => $recipientAccount->account_id,
+            'type' => 'Transfer In',
+            'amount' => $data['amount'],
+            'balance_after' => $recipientAccount->balance,
+            'transaction_date' => Carbon::now(),
+            'description' => 'Transfer from ' . $senderAccount->email . 
+                           (isset($data['reference']) && $data['reference'] ? ' - ' . $data['reference'] : ''),
+        ]);
     }
 
     public function showPasswordRecovery()

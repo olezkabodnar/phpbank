@@ -10,11 +10,6 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-/* ============================================
-   AUTH PAGES - REUSABLE COMPONENTS
-   ============================================ */
-
-/* Page Container */
 @layer components {
     .auth-page {
         @apply bg-[#212121] text-white min-h-screen flex items-center justify-center;
@@ -29,7 +24,6 @@
         @apply w-full max-w-md px-8;
     }
 
-    /* Logo and Header */
     .auth-header {
         @apply text-center mb-16;
     }
@@ -46,7 +40,6 @@
         @apply text-[424242] text-lg;
     }
 
-    /* Form Container */
     .auth-form {
         @apply space-y-6;
     }
@@ -61,7 +54,6 @@
     .date-icon{ width:1.1rem; height:1.1rem; color:#9e9e9e; }
     .form-icon-wrapper:focus-within .date-icon{ color:#ffffff; }
 
-    /* Error Messages */
     .error-alert {
         @apply mb-8 p-4 bg-red-500/20 border border-red-500 rounded-lg;
     }
@@ -70,7 +62,6 @@
         @apply text-red-400 text-sm space-y-1;
     }
 
-    /* Form Fields */
     .form-group {
         @apply space-y-2;
     }
@@ -103,16 +94,14 @@
         @apply text-xs text-[424242] mt-2;
     }
 
-    /* Buttons */
     .btn-primary {
         @apply w-full bg-[#e87f0c] hover:bg-[#ff8f1c] text-white py-3 rounded-full transition-all duration-200 cursor-pointer;
     }
 
     .btn-secondary {
-        @apply w-full block text-center bg-transparent hover:bg-[#303030] border-1 border-[#424242] text-white py-3 rounded-full transition-all duration-200;
+        @apply w-full block text-center bg-transparent hover:bg-[#303030] border border-[#424242] text-white py-3 rounded-full transition-all duration-200;
     }
 
-    /* Divider */
     .divider-section {
         @apply relative my-8;
     }
@@ -133,12 +122,10 @@
         @apply px-4 bg-[#212121] text-[424242];
     }
 
-    /* Action Links */
     .auth-link {
         @apply text-sm text-[424242] hover:text-[#e87f0c] transition;
     }
 
-    /* Success Messages */
     .success-message {
         @apply mb-8 p-4 bg-green-500/20 border border-green-500 rounded-lg;
     }
@@ -146,10 +133,6 @@
     .success-message-content {
         @apply text-green-400 text-sm space-y-1;
     }
-
-    /* ============================================
-       DASHBOARD - REUSABLE COMPONENTS
-       ============================================ */
 
     .dashboard-page {
         @apply bg-[#212121] text-white min-h-screen;
@@ -161,7 +144,7 @@
 
     /* Sidebar */
     .sidebar {
-        @apply w-56 bg-[#1a1a1a] border-r border-[#2d2d2d] flex flex-col;
+        @apply w-56 bg-[#181818] flex flex-col;
     }
 
     .sidebar-header {
@@ -177,7 +160,7 @@
     }
 
     .sidebar-link {
-        @apply flex items-center gap-3 px-4 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition;
+        @apply flex items-center gap-3 -mr-6 -ml-7 pr-6 pl-7 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition;
     }
 
     .sidebar-link.active {
@@ -185,7 +168,7 @@
     }
 
     .sidebar-footer {
-        @apply mt-auto p-6 border-t border-[#2d2d2d] space-y-4;
+        @apply mt-auto p-6 space-y-5;
     }
 
     .sidebar-footer-link {
@@ -193,14 +176,13 @@
     }
 
     .sidebar-button-form {
-        @apply w-full;
+        @apply -ml-7 -mr-6;
     }
 
     .sidebar-button {
-        @apply w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition border-none bg-transparent cursor-pointer;
+        @apply w-full flex items-center gap-3 pl-7 pr-6 py-3 rounded-lg text-[424242] hover:bg-[#2d2d2d] hover:text-white transition border-none bg-transparent cursor-pointer text-left;
     }
 
-    /* Main Content */
     .main-content {
         @apply flex-1 p-8;
     }
@@ -217,9 +199,8 @@
         @apply text-sm;
     }
 
-    /* Cards */
     .card {
-        @apply bg-[#2d2d2d] rounded-2xl p-8 mb-8 max-w-2xl;
+        @apply bg-[#303030] rounded-2xl p-8 mb-8 max-w-2xl;
     }
 
     .card-title {
@@ -227,16 +208,27 @@
     }
 
     .card-content {
-        @apply bg-[#1a1a1a] rounded-xl p-6;
+        @apply relative bg-[#212121] rounded-xl px-6 py-11;
     }
 
-    .card-grid {
-        @apply grid grid-cols-2 gap-8;
+    .card-content-account-details {
+        @apply relative bg-[#212121] rounded-xl px-6 pt-6 flex flex-col min-h-[170px];
     }
 
-    /* Balance Display */
+    .card-grid { 
+        @apply grid grid-cols-2 gap-8 items-stretch; 
+    }
+    
+    .card-corner {
+        @apply absolute bottom-4 right-4;
+    }
+
+    .card-corner svg {
+        @apply w-6 h-6 text-[424242];
+    }
+
     .balance-flex {
-        @apply flex justify-between items-start;
+        @apply flex justify-between;
     }
 
     .balance-section {
@@ -259,7 +251,6 @@
         @apply text-xs text-[424242] mt-1;
     }
 
-    /* Action Buttons */
     .action-buttons {
         @apply flex gap-4 mt-4;
     }
@@ -272,7 +263,6 @@
         @apply w-5 h-5;
     }
 
-    /* Account Details */
     .detail-row {
         @apply mb-2;
     }
@@ -290,10 +280,9 @@
     }
 
     .detail-flex {
-        @apply flex items-center gap-3 text-sm mt-6;
+        @apply absolute bottom-4 flex items-center text-sm mt-6;
     }
 
-    /* Status Badge */
     .status-active {
         @apply text-green-400 font-semibold;
     }
@@ -301,10 +290,6 @@
     .status-inactive {
         @apply text-red-400 font-semibold;
     }
-
-    /* ============================================
-       TRANSACTION TABLE - REUSABLE COMPONENTS
-       ============================================ */
 
     .table-wrapper {
         @apply bg-[#2d2d2d] rounded-2xl p-8;
@@ -358,7 +343,6 @@
         @apply py-8 px-4 text-center text-[424242];
     }
 
-    /* Transaction Badge */
     .badge {
         @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
     }
@@ -375,7 +359,6 @@
         @apply bg-blue-500/20 text-blue-400;
     }
 
-    /* Transaction Amount */
     .amount-positive {
         @apply text-green-400;
     }
@@ -391,5 +374,84 @@
     /* Pagination */
     .pagination-wrapper {
         @apply mt-6;
+    }
+
+    .transfer-header {
+        @apply flex justify-between items-center mb-6;
+    }
+
+    .transfer-balance {
+        @apply text-right;
+    }
+
+    .transfer-form {
+        @apply space-y-8;
+    }
+
+    .transfer-type-section {
+        @apply mb-8;
+    }
+
+    .transfer-type-options {
+        @apply space-y-4;
+    }
+
+    .transfer-type-option {
+        @apply flex items-start gap-4 p-4 bg-[#1a1a1a] rounded-xl cursor-pointer border-2 border-transparent hover:border-[#e87f0c]/30 transition;
+    }
+
+    .transfer-type-option:has(.transfer-type-radio:checked) {
+        @apply border-[#e87f0c] bg-[#e87f0c]/10;
+    }
+
+    .transfer-type-radio {
+        @apply mt-1;
+    }
+
+    .transfer-type-label {
+        @apply block font-medium mb-1;
+    }
+
+    .transfer-type-description {
+        @apply text-sm text-[#9e9e9e] block;
+    }
+
+    /* Transfer Fields */
+    .transfer-fields {
+        @apply space-y-6;
+    }
+
+    .form-submit-section {
+        @apply space-y-4 pt-4;
+    }
+
+    .transfer-submit {
+        @apply flex items-center justify-center gap-2;
+    }
+
+    .transfer-form .form-input {
+        @apply text-lg py-4;
+    }
+
+    .transfer-form .form-label {
+        @apply text-base font-medium;
+    }
+
+    .transfer-form .form-helper-text {
+        @apply text-sm;
+    }
+
+    .transfer-form input[name="amount"] {
+        @apply text-xl font-semibold;
+    }
+
+    .transfer-form input[name="reference"] {
+        @apply text-base;
+    }
+
+    .transfer-type-radio {
+        @apply w-5 h-5 text-[#e87f0c] bg-transparent border-2 border-[#424242] 
+               focus:ring-[#e87f0c] focus:ring-2 focus:ring-offset-0 
+               checked:bg-[#e87f0c] checked:border-[#e87f0c];
     }
 }
