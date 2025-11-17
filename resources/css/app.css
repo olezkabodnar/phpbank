@@ -227,11 +227,23 @@
     }
 
     .card-content {
-        @apply bg-[#212121] rounded-xl px-6 min-h-50 flex items-center;
+        @apply relative bg-[#212121] rounded-xl px-6 py-11;
     }
 
-    .card-grid {
-        @apply grid grid-cols-2 gap-8;
+    .card-content-account-details {
+        @apply relative bg-[#212121] rounded-xl px-6 pt-6 flex flex-col min-h-[170px];
+    }
+
+    .card-grid { 
+        @apply grid grid-cols-2 gap-8 items-stretch; 
+    }
+    
+    .card-corner {
+        @apply absolute bottom-4 right-4;
+    }
+
+    .card-corner svg {
+        @apply w-6 h-6 text-[424242];
     }
 
     /* Balance Display */
@@ -290,7 +302,7 @@
     }
 
     .detail-flex {
-        @apply flex items-center gap-3 text-sm mt-6;
+        @apply absolute bottom-4 flex items-center text-sm mt-6;
     }
 
     /* Status Badge */

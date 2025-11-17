@@ -60,20 +60,25 @@
 
         <div class="card-grid">
             <!-- User Email Section -->
-            <div class="card-content">
+            <div class="card-content-account-details">
                 <p class="detail-label">User Email</p>
                 <p class="detail-value detail-highlight mb-6">{{ $account->email }}</p>
 
                 <div class="detail-flex">
                     <span>password: ********</span>
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </div>
+
+                <div class="card-corner">
+                    <svg viewBox="0 0 23 26" aria-hidden="true">
+                            <circle cx="11.5" cy="7" r="7" fill="currentColor" stroke="none" stroke-width="2"/>
+                            <path d="M0,26v-4.23c0-3.74,3.89-6.77,8.68-6.77h5.63c4.8,0,8.68,3.03,8.68,6.77v4.23"
+                                fill="currentColor" stroke="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
                     </svg>
                 </div>
             </div>
 
             <!-- Account Security Section -->
-            <div class="card-content">
+            <div class="card-content-account-details">
                 <p class="detail-label">Account Security</p>
                 <div class="detail-row">
                     <p class="detail-label">Last Login:</p>
@@ -82,8 +87,12 @@
 
                 <div class="detail-flex">
                     <span>2FA Status: <span class="status-active">Active</span></span>
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </div>
+
+                <div class="card-corner">
+                    <svg viewBox="0 0 21.79 25.14">
+                        <path d="M17.47,8.57h-.34v-2.33h0c0-3.44-2.79-6.24-6.24-6.24s-6.24,2.79-6.24,6.24v2.33h-.34c-2.38,0-4.32,1.93-4.32,4.32v7.94c0,2.38,1.93,4.32,4.32,4.32h13.15c2.38,0,4.32-1.93,4.32-4.32v-7.94c0-2.38-1.93-4.32-4.32-4.32ZM6.91,8.57v-2.33h0c0-2.2,1.79-3.99,3.99-3.99s3.99,1.79,3.99,3.99h0v2.33h-7.98Z"
+                            fill="currentColor"/>
                     </svg>
                 </div>
             </div>
