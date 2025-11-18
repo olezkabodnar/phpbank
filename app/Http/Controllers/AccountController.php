@@ -350,8 +350,8 @@ class AccountController extends Controller
 
         $messages = [
             'amount.required' => 'Please enter a transfer amount.',
-            'amount.min' => 'Minimum transfer amount is $1.00.',
-            'amount.max' => 'Maximum transfer amount is $999,999.99.',
+            'amount.min' => 'Minimum transfer amount is €1.00.',
+            'amount.max' => 'Maximum transfer amount is €999,999.99.',
             'recipient_email.required' => 'Please enter the recipient\'s email address.',
             'recipient_email.email' => 'Please enter a valid email address.',
             'recipient_email.exists' => 'No account found with this email address.',
@@ -372,7 +372,7 @@ class AccountController extends Controller
             });
 
             return redirect()->route('account.index')
-                ->with('success', 'Transfer of $' . number_format($validatedData['amount'], 2) . ' completed successfully!');
+                ->with('success', 'Transfer of €' . number_format($validatedData['amount'], 2) . ' completed successfully!');
 
         } catch (\Exception $e) {
             return redirect()->back()

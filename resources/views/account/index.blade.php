@@ -19,16 +19,16 @@
             <div class="balance-flex">
                 <div>
                     <p class="balance-label">Current Balance:</p>
-                    <p class="balance-amount">${{ number_format($account->balance, 0, '', ' ') }}</p>
+                    <p class="balance-amount">€{{ number_format($account->balance, 0, '', ' ') }}</p>
                 </div>
                 <div class="balance-right">
                     <p class="balance-label">Last Transaction:</p>
                     @if($lastTransaction)
                         <p class="balance-amount">
                             @if($lastTransaction->amount >= 0)
-                                +${{ number_format($lastTransaction->amount, 0, '', ' ') }}
+                                +€{{ number_format($lastTransaction->amount, 0, '', ' ') }}
                             @else
-                                ${{ number_format($lastTransaction->amount, 0, '', ' ') }}
+                                €{{ number_format($lastTransaction->amount, 0, '', ' ') }}
                             @endif
                         </p>
                         <p class="balance-subtext">({{ strtolower($lastTransaction->type) }})</p>

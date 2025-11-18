@@ -52,15 +52,15 @@
                             </td>
                             <td class="table-body-cell right">
                                 @if ($transaction->type === 'Deposit')
-                                    <span class="amount-positive">+${{ number_format($transaction->amount, 2) }}</span>
+                                    <span class="amount-positive">+€{{ number_format($transaction->amount, 2) }}</span>
                                 @elseif ($transaction->type === 'Withdrawal')
-                                    <span class="amount-negative">-${{ number_format($transaction->amount, 2) }}</span>
+                                    <span class="amount-negative">-€{{ number_format($transaction->amount, 2) }}</span>
                                 @else
-                                    <span class="amount-neutral">${{ number_format($transaction->amount, 2) }}</span>
+                                    <span class="amount-neutral">€{{ number_format($transaction->amount, 2) }}</span>
                                 @endif
                             </td>
                             <td class="table-body-cell right text-gray-300">
-                                ${{ number_format($transaction->balance_after, 2) }}
+                                €{{ number_format($transaction->balance_after, 2) }}
                             </td>
                         </tr>
                     @empty
